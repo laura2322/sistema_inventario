@@ -1,38 +1,19 @@
 const express = require('express');
-const path = require('path');
+const sequelize = require('./config/database');
 
 const app = express();
-const PORT = 3000;
-
-// Middleware para parsear el cuerpo de las solicitudes
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
 
-// Servir archivos estáticos
-app.use(express.static(path.join(__dirname, 'public')));
+// Rutas
+app.use('/api/providers', require('./routes/providerRoutes'));
+app.use('/api/sales', require('./routes/saleRoutes'));
+app.use('/api/orders', require('./routes/orderRoutes'));
 
-// Rutas para servir las vistas
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'menu.html'));
-});
-
-app.get('/add-product.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'add-product.html'));
-});
-
-app.get('/view-products.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'view-products.html'));
-});
-
-app.get('/update-product.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'update-product.html'));
-});
-
-app.get('/delete-product.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'delete-product.html'));
-});
-
-// Iniciar el servidor
-app.listen(PORT, () => {
-    console.log(`Servidor corriendo en el puerto ${PORT}`);
+// Sincronización con la base de datos
+sequelize.sync().then(() => {
+    console.log('Base de datos sincronizada');
+    app.listen(3000, () => {
+        console.log('Servidor ejecutándose en http://localhost:3000');
+    });
 });
