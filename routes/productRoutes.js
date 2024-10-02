@@ -1,36 +1,27 @@
 // routes/productRoutes.js
 const express = require('express');
 const router = express.Router();
-const Product = require('../models/Product');
-const Prediction = require('../models/Prediction');
+const Producto = require('../models/Producto');
+const Prediccion = require('../models/Prediccion');
+const ProductoController = require("../controllers/productoController")
 
 // Crear un nuevo producto
-router.post('/productos', async (req, res) => {
-    try {
-        const { nombre, descripcion, precio, cantidad_stock } = req.body;
-        const newProduct = await Product.create({
-            nombre,
-            descripcion,
-            precio,
-            cantidad_stock
-        });
-        res.status(201).json(newProduct);
-    } catch (error) {
-        res.status(500).json({ error: 'Error al crear el producto' });
-    }
-});
+router.post('/productos',ProductoController.createProducto );
+
+// ruta para obtener PDF
+router.get("/PDF",ProductoController.PDF_productos)
 
 // Crear una predicción para un producto
 router.post('/predicciones', async (req, res) => {
     try {
         const { id_producto, fecha_prediccion, cantidad_predicha } = req.body;
-        const product = await Product.findByPk(id_producto);
+        const product = await Producto.findByPk(id_producto);
 
         if (!product) {
             return res.status(404).json({ error: 'Producto no encontrado' });
         }
 
-        const newPrediction = await Prediction.create({
+        const newPrediction = await Prediccion.create({
             fecha_prediccion,
             cantidad_predicha,
             id_producto: product.id_producto

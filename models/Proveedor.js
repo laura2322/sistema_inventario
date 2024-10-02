@@ -23,6 +23,6 @@ const Proveedor = sequelize.define('Proveedor', {
         type: DataTypes.TEXT,
         allowNull: true,
     },
-});
+}, { tableName: "Proveedor" });
 
 module.exports = Proveedor;

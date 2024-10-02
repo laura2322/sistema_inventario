@@ -1,8 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const Product = require('./Product');
+const Producto = require('./Producto');  // Asegúrate de que el modelo Producto esté correctamente importado
 
-const Prediction = sequelize.define('Prediccion', {
+const Prediccion = sequelize.define('Prediccion', {
     fecha_prediccion: {
         type: DataTypes.DATE,
         allowNull: false
@@ -10,12 +10,17 @@ const Prediction = sequelize.define('Prediccion', {
     cantidad_predicha: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    id_producto: {  // Aquí agregamos la clave foránea correctamente
+        type: DataTypes.INTEGER,
+        references: {
+            model: Producto,  // Modelo Producto
+            key: 'id',       // Clave primaria en el modelo Producto
+        },
+        allowNull: false
     }
 }, {
-    tableName: 'predicciones'
+    tableName: 'Prediccion'
 });
 
-// Relación de uno a muchos
-Product.hasMany(Prediction, { foreignKey: 'id_producto' });
-Prediction.belongsTo(Product, { foreignKey: 'id', targetKey: 'id_producto'});
-module.exports = Prediction;
+module.exports = Prediccion;

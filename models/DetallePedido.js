@@ -1,6 +1,10 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database'); // Ajusta la ruta según la estructura de tu proyecto
 
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
+const Pedido = require('./Pedido');
+const Producto = require('./Producto');
+
+// Definir el modelo de DetallePedido
 const DetallePedido = sequelize.define('DetallePedido', {
     id_detalle_pedido: {
         type: DataTypes.INTEGER,
@@ -10,15 +14,15 @@ const DetallePedido = sequelize.define('DetallePedido', {
     id_pedido: {
         type: DataTypes.INTEGER,
         references: {
-            model: 'Pedidos', // Asegúrate de que el nombre del modelo sea correcto
-            key: 'id_pedido'
+            model: Pedido,
+            key: 'id'
         }
     },
     id_producto: {
         type: DataTypes.INTEGER,
         references: {
-            model: 'Productos', // Asegúrate de que el nombre del modelo sea correcto
-            key: 'id_producto'
+            model: Producto,
+            key: 'id'
         }
     },
     cantidad: {

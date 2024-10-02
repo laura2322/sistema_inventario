@@ -27,8 +27,4 @@ Venta.init({
     modelName: 'Venta'
 });
 
-// Establecer la relación
-Cliente.hasMany(Venta, { foreignKey: 'id_cliente' }); // Un cliente puede tener muchas ventas
-Venta.belongsTo(Cliente, { foreignKey: 'id_cliente' }); // Cada venta pertenece a un cliente
-
 module.exports = Venta;

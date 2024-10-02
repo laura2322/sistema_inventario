@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generar Factura PDF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .container h2 {
+            margin-bottom: 20px;
+        }
+        .container label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        .container input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .container button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .container button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Generar Factura</h2>
+        <form id="factura-form">
+            <label for="cliente">Cliente:</label>
+            <input type="text" id="cliente" required>
+
+            <label for="direccion">Dirección:</label>
+            <input type="text" id="direccion" required>
+
+            <label for="producto">Producto:</label>
+            <input type="text" id="producto" required>
+
+            <label for="cantidad">Cantidad:</label>
+            <input type="number" id="cantidad" required>
+
+            <label for="precio">Precio unitario:</label>
+            <input type="number" id="precio" required>
+
+            <button type="button" id="btn-generar-pdf">Generar PDF</button>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        document.getElementById('btn-generar-pdf').addEventListener('click', async function () {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const cliente = document.getElementById('cliente').value;
+            const direccion = document.getElementById('direccion').value;
+            const producto = document.getElementById('producto').value;
+            const cantidad = document.getElementById('cantidad').value;
+            const precio = document.getElementById('precio').value;
+            const total = cantidad * precio;
+
+            // Generar el PDF
+            doc.setFontSize(20);
+            doc.text('Factura', 105, 20, { align: 'center' });
+            doc.setFontSize(12);
+            doc.text(`Cliente: ${cliente}`, 10, 40);
+            doc.text(`Dirección: ${direccion}`, 10, 50);
+            doc.text(`Producto: ${producto}`, 10, 60);
+            doc.text(`Cantidad: ${cantidad}`, 10, 70);
+            doc.text(`Precio unitario: $${precio}`, 10, 80);
+            doc.text(`Total: $${total}`, 10, 90);
+            doc.save(`factura_${cliente}.pdf`);
+
+            // Enviar datos a la base de datos
+            await fetch('/api/factura', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    cliente,
+                    direccion,
+                    producto,
+                    cantidad,
+                    precio,
+                    total
+                }),
+            });
+        });
+    </script>
+</body>
+</html>
